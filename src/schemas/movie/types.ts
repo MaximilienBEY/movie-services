@@ -1,21 +1,21 @@
 import { z } from "zod"
 
 import {
-  MovieCreateBodySchema,
-  MovieListQuerySchema,
-  MovieListResponseSchema,
-  MovieSchema,
-  MovieUpdateBodySchema,
+  movieCreateSchema,
+  movieListQuerySchema,
+  movieListResponseSchema,
+  movieSchema,
+  movieUpdateSchema,
 } from "./schema"
 
-export type MovieType = z.infer<typeof MovieSchema>
+export type MovieType = z.infer<typeof movieSchema>
 
 // List movies request
-export type MovieListQueryType = z.infer<typeof MovieListQuerySchema>
-export type MovieListResponseType = z.infer<typeof MovieListResponseSchema>
+export type MovieListQueryType = z.infer<typeof movieListQuerySchema>
+export type MovieListResponseType = z.infer<typeof movieListResponseSchema>
 
 // Create movie request
-export type MovieCreateBodyType = z.infer<typeof MovieCreateBodySchema>
+export type MovieCreateType = z.infer<typeof movieCreateSchema>
 
 // Update movie request
-export type MovieUpdateBodyType = z.infer<typeof MovieUpdateBodySchema>
+export type MovieUpdateType = z.infer<typeof movieUpdateSchema>

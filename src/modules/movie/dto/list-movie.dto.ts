@@ -1,4 +1,4 @@
 import { createZodDto } from "nestjs-zod"
-import { MovieListQuerySchema } from "src/schemas/movie/schema"
+import { movieListQuerySchema } from "src/schemas/movie/schema"
 
-export class ListMovieDto extends createZodDto(MovieListQuerySchema) {}
+export class ListMovieDto extends createZodDto(movieListQuerySchema) {}

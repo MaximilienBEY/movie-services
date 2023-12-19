@@ -1,4 +1,4 @@
 import { createZodDto } from "nestjs-zod"
-import { MovieCreateBodySchema } from "src/schemas/movie/schema"
+import { movieCreateSchema } from "src/schemas/movie/schema"
 
-export class CreateMovieDto extends createZodDto(MovieCreateBodySchema) {}
+export class CreateMovieDto extends createZodDto(movieCreateSchema) {}

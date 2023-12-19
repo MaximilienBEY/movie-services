@@ -14,7 +14,8 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express"
 import { ApiOkResponse, ApiQuery, ApiTags } from "@nestjs/swagger"
 import { zodToOpenAPI } from "nestjs-zod"
-import { MovieListResponseSchema, MovieSchema } from "src/schemas/movie/schema"
+import { Admin } from "src/decorators/user.decorator"
+import { movieListResponseSchema, movieSchema } from "src/schemas/movie/schema"
 
 import { CreateMovieDto } from "./dto/create-movie.dto"
 import { ListMovieDto } from "./dto/list-movie.dto"
@@ -26,12 +27,11 @@ import { MovieService } from "./movie.service"
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
+  @Admin()
   @HttpCode(201)
   @Post()
   @UseInterceptors(FileInterceptor("poster", { limits: { fileSize: 1024 * 1024 * 10 } }))
-  @ApiOkResponse({
-    schema: zodToOpenAPI(MovieSchema),
-  })
+  @ApiOkResponse({ schema: zodToOpenAPI(movieSchema) })
   create(@Body() data: CreateMovieDto, @UploadedFile() poster: Express.Multer.File) {
     return this.movieService.create(data, poster)
   }
@@ -44,26 +44,21 @@ export class MovieController {
   })
   @ApiQuery({ name: "page", required: false, schema: { type: "number", minimum: 1, default: 1 } })
   @ApiQuery({ name: "query", required: false, schema: { type: "string" } })
-  @ApiOkResponse({
-    schema: zodToOpenAPI(MovieListResponseSchema),
-  })
+  @ApiOkResponse({ schema: zodToOpenAPI(movieListResponseSchema) })
   findAll(@Query() query: ListMovieDto) {
     return this.movieService.findAll(query)
   }
 
   @Get(":id")
-  @ApiOkResponse({
-    schema: zodToOpenAPI(MovieSchema),
-  })
+  @ApiOkResponse({ schema: zodToOpenAPI(movieSchema) })
   findOne(@Param("id") id: string) {
     return this.movieService.findOne(id)
   }
 
+  @Admin()
   @Patch(":id")
   @UseInterceptors(FileInterceptor("poster", { limits: { fileSize: 1024 * 1024 * 10 } }))
-  @ApiOkResponse({
-    schema: zodToOpenAPI(MovieSchema),
-  })
+  @ApiOkResponse({ schema: zodToOpenAPI(movieSchema) })
   update(
     @Param("id") id: string,
     @Body() body: UpdateMovieDto,
@@ -72,6 +67,7 @@ export class MovieController {
     return this.movieService.update(id, body, poster)
   }
 
+  @Admin()
   @Delete(":id")
   @ApiOkResponse()
   remove(@Param("id") id: string) {
