@@ -3,8 +3,8 @@ import { Reflector } from "@nestjs/core"
 import { Request } from "express"
 import { IS_PUBLIC_KEY } from "src/decorators/user.decorator"
 
-import { UserService } from "../user/user.service"
-import { AuthService } from "./auth.service"
+import { UserService } from "../../user/user.service"
+import { AuthService } from "../auth.service"
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -25,10 +25,10 @@ export class AuthGuard implements CanActivate {
     const jwtToken = this.extractTokenFromHeader(request)
     if (!jwtToken) throw new UnauthorizedException()
 
-    const token = await this.authService.decodeToken(jwtToken).then(token => token?.sub)
-    if (!token) throw new UnauthorizedException()
+    const userId = await this.authService.decodeToken(jwtToken).then(token => token?.sub)
+    if (!userId) throw new UnauthorizedException()
 
-    const user = await this.userService.findOneByToken(token)
+    const user = await this.userService.findOne(userId).catch(() => null)
     if (!user) throw new UnauthorizedException()
 
     request.user = user

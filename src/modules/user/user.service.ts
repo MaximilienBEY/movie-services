@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common"
+import { User } from "@prisma/client"
 import * as bcrypt from "bcrypt"
 import { PrismaService } from "src/prisma/prisma.service"
 import { UserCreateType, UserType, UserUpdateType } from "src/schemas/user/types"
@@ -19,7 +20,31 @@ export class UserService {
   private async hashPassword(password: string) {
     return bcrypt.hash(password, 10)
   }
+  public formatUser(u: User): UserType {
+    const user: UserType & { password?: string } = { ...u }
+    delete user.password
 
+    return user
+  }
+
+  async findAll(): Promise<UserType[]> {
+    return this.prisma.user.findMany({
+      select: selectedFields,
+    })
+  }
+  async findOne(id: string) {
+    return this.prisma.user
+      .findFirstOrThrow({
+        where: { id },
+        select: selectedFields,
+      })
+      .catch(() => {
+        throw new NotFoundException("User not found")
+      })
+  }
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findFirst({ where: { email } })
+  }
   async create(body: UserCreateType) {
     const hashedPassword = await this.hashPassword(body.password)
     return this.prisma.user
@@ -31,33 +56,6 @@ export class UserService {
         throw new BadRequestException("Email already used")
       })
   }
-
-  findAll(): Promise<UserType[]> {
-    return this.prisma.user.findMany({
-      select: selectedFields,
-    })
-  }
-
-  findOne(id: string) {
-    return this.prisma.user
-      .findFirstOrThrow({
-        where: { id },
-        select: selectedFields,
-      })
-      .catch(() => {
-        throw new NotFoundException("User not found")
-      })
-  }
-  findOneByEmail(email: string) {
-    return this.prisma.user.findFirst({ where: { email } })
-  }
-  findOneByToken(token: string) {
-    return this.prisma.user.findFirst({
-      select: selectedFields,
-      where: { tokens: { some: { token } } },
-    })
-  }
-
   async update(id: string, body: UserUpdateType) {
     const hashedPassword = body.password ? await this.hashPassword(body.password) : undefined
     return this.prisma.user.update({
@@ -66,8 +64,7 @@ export class UserService {
       select: selectedFields,
     })
   }
-
-  remove(id: string) {
+  async remove(id: string) {
     return this.prisma.user.delete({ where: { id } }).catch(() => {
       throw new NotFoundException("User not found")
     })

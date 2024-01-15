@@ -5,7 +5,7 @@ import {
   SetMetadata,
   UseGuards,
 } from "@nestjs/common"
-import { AdminGuard } from "src/modules/auth/admin.guard"
+import { AdminGuard } from "src/modules/auth/guards/admin.guard"
 
 export const IS_PUBLIC_KEY = "isPublic"
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true)

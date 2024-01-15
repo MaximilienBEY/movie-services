@@ -8,6 +8,7 @@ export const userSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
+export const usersSchema = z.array(userSchema)
 
 // User Create
 export const userCreateSchema = userSchema.pick({ email: true, name: true, role: true }).extend({

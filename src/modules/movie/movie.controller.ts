@@ -22,7 +22,7 @@ import { ListMovieDto } from "./dto/list-movie.dto"
 import { UpdateMovieDto } from "./dto/update-movie.dto"
 import { MovieService } from "./movie.service"
 
-@ApiTags("Movie")
+@ApiTags("Movies")
 @Controller("movies")
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
