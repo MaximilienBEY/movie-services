@@ -4,10 +4,10 @@ import { writeFile } from "fs/promises"
 import { join } from "path"
 import { PrismaService } from "src/prisma/prisma.service"
 import {
-  MovieCreateBodyType,
+  MovieCreateType,
   MovieListQueryType,
   MovieListResponseType,
-  MovieUpdateBodyType,
+  MovieUpdateType,
 } from "src/schemas/movie/types"
 
 @Injectable()
@@ -30,7 +30,7 @@ export class MovieService {
     })
   }
 
-  async create({ categories, ...data }: MovieCreateBodyType, file?: Express.Multer.File) {
+  async create({ categories, ...data }: MovieCreateType, file?: Express.Multer.File) {
     const movie = await this.prisma.movie.create({
       data: {
         ...data,
@@ -94,11 +94,7 @@ export class MovieService {
     return movie
   }
 
-  async update(
-    id: string,
-    { categories, ...data }: MovieUpdateBodyType,
-    file?: Express.Multer.File,
-  ) {
+  async update(id: string, { categories, ...data }: MovieUpdateType, file?: Express.Multer.File) {
     const movie = await this.prisma.movie
       .update({
         where: { id },
